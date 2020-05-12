@@ -41,6 +41,7 @@ public:
    // operaciones
    double scal_prod(const vector_t<double>&);
    double scal_prod(const sparse_vector_t&);
+   double average_non0(void);
   
    // E/S
    void write(ostream& = cout) const;
@@ -187,4 +188,15 @@ sparse_vector_t::scal_prod(const sparse_vector_t& sv)
   }
 
   return s;
+}
+
+double 
+sparse_vector_t::average_non0(void) {
+  double s = 0;
+
+  for(int i = 0; i < get_nz(); i++) {
+    s += pv_[i].get_val();
+  }
+
+  return (s / get_nz());
 }

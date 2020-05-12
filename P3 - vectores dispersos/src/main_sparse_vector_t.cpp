@@ -41,6 +41,8 @@ int main()
   
   cout << "sv3 * v1 = " << COLOR << sv3.scal_prod(v1) << UNDO << endl;
   cout << "sv3 * sv2 = " << COLOR << sv3.scal_prod(sv2) << UNDO << endl;
+
+    cout << "prom(sv3) = " << COLOR << sv3.average_non0() << UNDO << endl;
   
   return 0;
 }
