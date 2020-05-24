@@ -12,19 +12,17 @@
 
 #include <iostream>
 #include "matrix_t.hpp"
+#include "queue_l_t.hpp"
+#include "pair_t.hpp"
 
 #define TRACE(x) cout << (#x) << "= " << (x) << endl
 
-// indica pasillo
-#define PASS_ID  0
-// indica pared
-#define WALL_ID  1
-// indica camino de salida
-#define PATH_ID  2
-// indica inicio del laberinto
-#define START_ID 8
-// indica la salida del laberinto
-#define END_ID   9
+
+#define PASS_ID  0 // indica pasillo
+#define WALL_ID  1 // indica pared
+#define PATH_ID  2 // indica camino de salida
+#define START_ID 8 // indica inicio del laberinto
+#define END_ID   9 // indica la salida del laberinto
 
 // caracteres usados para mostrar el laberinto por pantalla
 #define WALL_CHR  "█"
@@ -38,6 +36,7 @@ using namespace AED;
 
 typedef matrix_t<short> matrix_t_short;
 typedef matrix_t<bool> matrix_t_bool;
+typedef queue_l_t<pair_t<short>> qop; // queue of pairs
 
 // enumera las direcciones Norte, Este, Sur y Oeste (West)
 enum direction_t {N, E, S, W};
@@ -51,12 +50,10 @@ const short j_d[] = {  0, 1, 0, -1};
 class maze_t 
 {
 private:
-  // matriz que guarda los valores leídos de la entrada
-  matrix_t_short matrix_;
-  // matriz que guarda si una celda ha sido visitada o no
-  matrix_t_bool visited_;
-  // guarda las filas y columnas de entrada (start) y salida (end)
-  int i_start_, j_start_, i_end_, j_end_;
+  matrix_t_short matrix_; // matriz que guarda los valores leídos de la entrada
+  matrix_t_bool visited_; // matriz que guarda si una celda ha sido visitada o no
+  int i_start_, j_start_, i_end_, j_end_; // guarda las filas y columnas de entrada (start) y salida (end)
+  qop sol_; // guarda el camino de la solución
 
 public:
   // constructor y destructor
@@ -65,9 +62,11 @@ public:
 
   // método para resolver el laberinto y que invoca al otro método recursivo
   bool solve(void);
+  
 
   istream& read(istream& = cin);
   ostream& write(ostream& = cout) const;
+  void print_sol(ostream& = cout);
   
 private:
   bool is_ok_(const int, const int) const;

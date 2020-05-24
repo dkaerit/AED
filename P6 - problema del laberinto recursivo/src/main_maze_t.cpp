@@ -27,6 +27,7 @@ int main()
   { 
     cout << "¡¡ Se ha encontrado una salida al laberinto !!" << endl;
     cout << M << endl;
+    M.print_sol(cout);
   }
   else
     cout << "No se ha podido encontrar la salida del laberinto..." << endl;

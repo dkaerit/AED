@@ -41,39 +41,39 @@ maze_t::solve()
 istream&
 maze_t::read(istream& is)
 { 
-  int m, n;
-  is >> m >> n;
-  assert(m > 0 && n > 0);
+  int m, n; // fila m x columna n
+  is >> m >> n; // recibo los valores de m y n del fichero
+  assert(m > 0 && n > 0); // no pueden ser 0
   
-  matrix_.resize(m, n);
-  visited_.resize(m, n);
+  matrix_.resize(m, n); // creo la matriz laberinto de la clase
+  visited_.resize(m, n); // creo la matriz de nodos visitados
   
-  for (int i = 1; i <= m; i++)
+  for (int i = 1; i <= m; i++) // recorro en columnas la dimensión de la matriz
   {
-    for (int j = 1; j <= n; j++)
+    for (int j = 1; j <= n; j++) // por cada columna salto en filas
     {
-      short s;
-      is >> s;
+      short s; // creo una variable que será la que contenga el bit a analizar
+      is >> s; // lo almaceno
       
       // si el dato es un START_ID -> entrada al laberinto
-      if (s == START_ID)
+      if (s == START_ID) // chequeo que el bit es 8
       {
         i_start_ = i;
         j_start_ = j;
       }
       // si el dato es un END_ID -> salida al laberinto
-      else if (s == END_ID)
+      else if (s == END_ID) // chequeo que el bit es 9
       {
         i_end_ = i;
         j_end_   = j;
       }
       
-      matrix_(i, j) = s;
+      matrix_(i, j) = s; // en cualquier caso (sea START, END, MURO) siempre lo vamos a al macenar en la matriz
     }
   }
 
   // comprobamos que se han leído correctamente la entrada y la salida  
-  assert (i_start_ != -1 && j_start_ != -1 && i_end_ != -1 && j_end_ != -1);
+  assert (i_start_ != -1 && j_start_ != -1 && i_end_ != -1 && j_end_ != -1); // Siempre debe haber un comienzo y un final
 
   return is;
 }
@@ -96,10 +96,17 @@ maze_t::write(ostream& os) const
         case PASS_ID:  os << PASS_CHR;  break;
         case PATH_ID:  os << PATH_CHR;  break;
       }
+
     os << endl;
   }
   
   return os; 
+}
+
+void
+maze_t::print_sol(ostream& os) 
+{
+  sol_.write();
 }
 
 
@@ -113,6 +120,18 @@ maze_t::is_ok_(const int i, const int j) const
   // - fila i y la columna j están dentro de los límites del laberinto,
   // - la celda en (i, j) no puede ser un muro,
   // - la celda (i, j) no puede haber sido visitada antes.
+  if(
+    i <= matrix_.get_m() && i > 0 &&
+    j <= matrix_.get_n() && j > 0
+    ) 
+  {
+    if(
+      matrix_(i,j) != 1 && 
+      visited_(i,j) == 0
+      )   return true;
+    else                    return false;
+  }
+    
 }
 
 
@@ -124,11 +143,12 @@ maze_t::solve_(const int i, const int j)
 {
   // CASO BASE:
   // retornar 'true' si 'i' y 'j' han llegado a la salida
-
-  // [poner código aquí]
+    if(
+    i == i_end_ &&
+    j == j_end_) return true;
 
   // marcamos la celda como visitada
-  visited_(i, j) = true;
+  visited_(i, j) = true; 
   
   // CASO GENERAL:
   // para cada una de las 4 posibles direcciones (N, E, S, W) ver si es posible
@@ -137,8 +157,22 @@ maze_t::solve_(const int i, const int j)
   // Si la llamada devuelve 'true', poner en la celda el valor PATH_ID, y
   // propagarla retornando también 'true'
 
-  // [poner código aquí]
-  
+  for(int k = 0; k <= 3; k++) {
+
+    int mv_i = i + i_d[k];
+    int mv_j = j + j_d[k];
+
+    if(is_ok_(mv_i, mv_j)) {
+      
+      if(solve_(mv_i, mv_j)) { // N, E, S, W 
+        if(mv_i == i_end_ && mv_j == j_end_) cout << "";
+        else matrix_(mv_i, mv_j) = PATH_ID;
+
+        sol_.push(pair_t<short>(mv_i, mv_j));
+        return true;
+      }; 
+    }  
+  } 
   // desmarcamos la celda como visitada (denominado "backtracking") y
   // retornamos 'false'
   visited_(i, j) = false;
