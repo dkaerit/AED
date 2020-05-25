@@ -20,6 +20,7 @@ int main()
   maze_t M;
   
   cin >> M;
+  M.centrar();
   cout << M << endl;
   
   
@@ -28,6 +29,7 @@ int main()
     cout << "¡¡ Se ha encontrado una salida al laberinto !!" << endl;
     cout << M << endl;
     M.print_sol(cout);
+    cout << "muros: " << M.contar_muros() << endl;
   }
   else
     cout << "No se ha podido encontrar la salida del laberinto..." << endl;

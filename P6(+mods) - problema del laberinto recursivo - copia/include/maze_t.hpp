@@ -46,6 +46,10 @@ enum direction_t {N, E, S, W};
 const short i_d[] = { -1, 0, 1,  0};
 const short j_d[] = {  0, 1, 0, -1};
 
+//                   N   E  S   W
+//const short i_d[] = {1, -1, 1, -1, -1, 0, 1,  0};
+//const short j_d[] = {1, -1, -1, 1, 0, 1, 0, -1};
+
 
 class maze_t 
 {
@@ -54,6 +58,8 @@ private:
   matrix_t_bool visited_; // matriz que guarda si una celda ha sido visitada o no
   int i_start_, j_start_, i_end_, j_end_; // guarda las filas y columnas de entrada (start) y salida (end)
   qop sol_; // guarda el camino de la solución
+
+  matrix_t_short deadends_;
   
 
 public:
@@ -68,6 +74,9 @@ public:
   istream& read(istream& = cin);
   ostream& write(ostream& = cout) const;
   void print_sol(ostream& = cout);
+
+  int contar_muros(void);
+  void centrar(void);
   
 private:
   bool is_ok_(const int, const int) const;

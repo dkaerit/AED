@@ -50,6 +50,7 @@ maze_t::read(istream& is)
   
   matrix_.resize(m, n); // creo la matriz laberinto de la clase
   visited_.resize(m, n); // creo la matriz de nodos visitados
+  deadends_.resize(m, n);
   
   for (int i = 1; i <= m; i++) // recorro en columnas la dimensión de la matriz
   {
@@ -111,6 +112,7 @@ maze_t::print_sol(ostream& os)
 {
   os << "(columna:fila): ";
   sol_.write();
+  deadends_.write();
 }
 
 
@@ -174,7 +176,9 @@ maze_t::solve_(const int i, const int j, int &count)
 
         sol_.push(pair_t<short>(mv_i, mv_j));
         return true;
-      } 
+      } else {
+        deadends_(i,j) = 1;
+      }
     }  
   } 
   // desmarcamos la celda como visitada (denominado "backtracking") y
@@ -201,3 +205,30 @@ operator<<(ostream& os, const maze_t& M)
   return M.write(os);
 }
 
+
+
+int
+maze_t::contar_muros(void)
+{
+  int count = 0;
+  for(int i = 1; i <= matrix_.get_m(); i++) {
+    for(int j = 1; j <= matrix_.get_n(); j++) {
+      if(matrix_(i,j) == 1) count++;
+    }
+  }
+  return count;
+}
+
+
+void
+maze_t::centrar(void) {
+
+  matrix_(i_start_,j_start_) = 1;
+  j_start_ = matrix_.get_n()/2;
+  matrix_(i_start_,j_start_) = 8;
+
+  matrix_(i_end_,j_end_) = 1;
+  j_end_ = matrix_.get_n()/2;
+  matrix_(i_end_,j_end_) = 9;
+
+}
